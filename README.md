@@ -13,10 +13,11 @@ administration:
 | Feed security findings into GitHub code scanning | `GET /v1/security/scans/code?format=sarif` | `crapi security --sarif` |
 | Compliance / SIEM export | `GET /v1/audit-logs` | `crapi audit-logs` |
 
-Also available and used by the client: `POST /v1/users/seats`, `POST /v1/users/roles`,
-`GET /v1/roles`, `GET /v1/organizations`, `GET /v1/metrics/mcp`,
-`PATCH`/`DELETE /v1/learnings/{id}`. Full reference:
-<https://docs.coderabbit.ai/api-reference>.
+The client also wraps `POST /v1/users/seats` for assigning and unassigning seats. The
+API has more endpoints that this sample does not cover: `POST /v1/users/roles`,
+`/v1/roles`, `GET /v1/organizations`, `GET /v1/metrics/mcp`,
+`GET /v1/metrics/review-comments` and `PATCH`/`DELETE /v1/learnings/{id}`. Full
+reference: <https://docs.coderabbit.ai/api-reference>.
 
 ## 1. Create an API key
 
@@ -24,8 +25,14 @@ Also available and used by the client: `POST /v1/users/seats`, `POST /v1/users/r
 2. Click **Create API key**, choose type **User**, and pick an expiry.
 3. Copy the key. It is shown once.
 
-Admin permissions are needed for audit logs and seat changes. Keys are scoped to
-the organization they were created in.
+Keys are scoped to the organization they were created in. Some endpoints need more
+than the Enterprise plan:
+
+| Command | Also requires |
+| --- | --- |
+| `audit-logs`, seat changes | Admin role |
+| `seats` | `user_management:read` permission |
+| `security` | The Security add-on and the `security:read` permission |
 
 ## 2. Run it
 
