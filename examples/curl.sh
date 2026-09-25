@@ -29,8 +29,9 @@ echo "== Open security findings (first page)"
 curl -sS "${AUTH[@]}" "${BASE}/v1/security/scans/code?state=open&limit=5"
 echo
 
-echo "== Audit log"
-curl -sS "${AUTH[@]}" "${BASE}/v1/audit-logs?date_from=${FROM}&date_to=${TO}&page_size=5"
+echo "== Audit log (takes ISO 8601 datetimes, not plain dates)"
+curl -sS "${AUTH[@]}" \
+  "${BASE}/v1/audit-logs?date_from=${FROM}T00:00:00Z&date_to=${TO}T23:59:59Z&page_size=5"
 echo
 
 echo "== On-demand sprint report (may take ~30s)"

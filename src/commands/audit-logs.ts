@@ -17,13 +17,15 @@ export async function run(client: CodeRabbitClient, argv: string[]): Promise<voi
 			out: { type: "string" },
 		},
 	})
-	const { start, end } = lastNDays(Number(values.days))
+	const now = new Date()
+	const { start } = lastNDays(Number(values.days), now)
 
 	const entries: AuditLogEntry[] = []
 	for (let page = 1; ; page++) {
 		const result = await client.auditLogs({
-			date_from: start,
-			date_to: end,
+			// Unlike the metrics endpoints, audit logs take full ISO 8601 datetimes.
+			date_from: `${start}T00:00:00.000Z`,
+			date_to: now.toISOString(),
 			actions: values.action,
 			page,
 			page_size: 100,

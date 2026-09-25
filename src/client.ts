@@ -182,7 +182,9 @@ export class CodeRabbitClient {
 	// --- Audit logs (page-number pagination) --------------------------------
 
 	auditLogs(query: {
+		/** ISO 8601 datetime, e.g. 2026-09-18T00:00:00.000Z */
 		date_from?: string
+		/** ISO 8601 datetime */
 		date_to?: string
 		actions?: string[]
 		page?: number
@@ -231,8 +233,17 @@ async function readBody(response: Response): Promise<unknown> {
 
 function describe(body: unknown): string {
 	if (body && typeof body === "object") {
-		const { error, message } = body as { error?: unknown; message?: unknown }
+		const { error, errors, message } = body as {
+			error?: unknown
+			errors?: unknown
+			message?: unknown
+		}
 		if (typeof message === "string") return message
+		if (Array.isArray(errors) && errors.length) {
+			return errors
+				.map(e => (e && typeof e === "object" && "message" in e ? String(e.message) : JSON.stringify(e)))
+				.join("; ")
+		}
 		if (error && typeof error === "object" && "message" in error) {
 			return String((error as { message: unknown }).message)
 		}
