@@ -7,9 +7,11 @@ export function clientFromEnv(env: NodeJS.ProcessEnv = process.env): CodeRabbitC
 			"CODERABBIT_API_KEY is not set. Create a key under Settings -> Account -> API keys.",
 		)
 	}
-	return new CodeRabbitClient({
+	const options = {
 		apiKey,
 		baseUrl: env["CODERABBIT_API_BASE_URL"] || DEFAULT_BASE_URL,
 		orgId: env["CODERABBIT_ORG_ID"] || undefined,
-	})
+	}
+	if (env["DEBUG"]) console.error("[crapi] client options:", options)
+	return new CodeRabbitClient(options)
 }

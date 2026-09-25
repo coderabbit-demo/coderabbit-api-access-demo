@@ -3,6 +3,7 @@ import { CodeRabbitApiError, type CodeRabbitClient } from "./client.ts"
 import { clientFromEnv } from "./config.ts"
 import * as auditLogs from "./commands/audit-logs.ts"
 import * as learnings from "./commands/learnings.ts"
+import * as reclaimSeats from "./commands/reclaim-seats.ts"
 import * as report from "./commands/report.ts"
 import * as reviewMetrics from "./commands/review-metrics.ts"
 import * as seats from "./commands/seats.ts"
@@ -20,6 +21,10 @@ const COMMANDS: Record<string, { run: Command; help: string }> = {
 		help: 'On-demand activity report     [--days 7] [--template "Sprint Report"] [--prompt ...] [--repo name]...',
 	},
 	seats: { run: seats.run, help: "Seat utilisation summary" },
+	"reclaim-seats": {
+		run: reclaimSeats.run,
+		help: "Unassign seats of inactive users [--days 30] [--dry-run]",
+	},
 	learnings: {
 		run: learnings.run,
 		help: "Export learnings as CSV        [--never-used] [--search text] [--out file]",

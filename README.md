@@ -9,6 +9,7 @@ administration:
 | Review impact per repository (comments posted/accepted, severity, time to merge) | `GET /v1/metrics/reviews` | `crapi review-metrics` |
 | AI-written sprint / standup / release-notes report | `POST /api/v1/report.generate` | `crapi report` |
 | Seat utilisation | `GET /v1/users` | `crapi seats` |
+| Free up seats held by inactive users | `GET /v1/users`, `GET /v1/metrics/reviews`, `POST /v1/users/seats` | `crapi reclaim-seats` |
 | Back up or curate review learnings | `GET /v1/learnings` | `crapi learnings` |
 | Feed security findings into GitHub code scanning | `GET /v1/security/scans/code?format=sarif` | `crapi security --sarif` |
 | Compliance / SIEM export | `GET /v1/audit-logs` | `crapi audit-logs` |
