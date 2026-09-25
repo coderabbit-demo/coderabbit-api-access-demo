@@ -1,0 +1,22 @@
+{
+	"name": "coderabbit-api-access-demo",
+	"version": "1.0.0",
+	"private": true,
+	"description": "Sample scripts for the CodeRabbit Enterprise API: review metrics, seats, learnings, security findings, audit logs and on-demand reports.",
+	"type": "module",
+	"engines": {
+		"node": ">=22.18"
+	},
+	"bin": {
+		"crapi": "./src/cli.ts"
+	},
+	"scripts": {
+		"crapi": "node src/cli.ts",
+		"typecheck": "tsc --noEmit",
+		"test": "node --test \"test/**/*.test.ts\""
+	},
+	"devDependencies": {
+		"@types/node": "26.6.1",
+		"typescript": "7.0.2"
+	}
+}

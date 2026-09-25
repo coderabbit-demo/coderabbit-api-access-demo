@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: en-US
+reviews:
+  profile: assertive
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  auto_review:
+    enabled: true
+    drafts: false
+  path_instructions:
+    - path: "src/**/*.ts"
+      instructions: |
+        This code calls the CodeRabbit public API with a customer's API key.
+        - The API key must never be logged, printed, written to files, or placed in a URL.
+        - Every list endpoint is cursor-paginated (`next_cursor`); flag code that reads only the first page.
+        - Endpoints are rate limited (~10 requests/minute per endpoint group). Flag unbounded
+          parallel requests and loops that issue one request per item.
+        - POST /v1/users/seats accepts at most 500 user ids per request.
+        - Commands that change state (seats, roles, learnings) must default to a dry run
+          and require an explicit flag to apply changes.
+    - path: ".github/workflows/**"
+      instructions: |
+        Secrets must only be read from `secrets.*`. Jobs should declare least-privilege `permissions`.

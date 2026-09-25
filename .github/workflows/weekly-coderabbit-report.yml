@@ -1,0 +1,63 @@
+# Pulls CodeRabbit data through the Enterprise API every Monday:
+#   1. Review metrics per repository -> job summary + CSV artifact
+#   2. On-demand sprint report       -> job summary
+#   3. Open security findings        -> GitHub code scanning (SARIF)
+#
+# Setup: add an API key (Settings -> Account -> API keys, type "User")
+# as the repository secret CODERABBIT_API_KEY.
+name: Weekly CodeRabbit report
+
+on:
+  # Uncomment once the CODERABBIT_API_KEY secret is configured.
+  # schedule:
+  #   - cron: "0 7 * * 1"
+  workflow_dispatch:
+    inputs:
+      days:
+        description: Days to include
+        default: "7"
+
+permissions:
+  contents: read
+
+env:
+  CODERABBIT_API_KEY: ${{ secrets.CODERABBIT_API_KEY }}
+  DAYS: ${{ inputs.days || '7' }}
+
+jobs:
+  metrics-and-report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Review metrics
+        run: |
+          node src/cli.ts review-metrics --days "$DAYS" >> "$GITHUB_STEP_SUMMARY"
+          node src/cli.ts review-metrics --days "$DAYS" --format csv --out out/review-metrics.csv
+
+      - name: Developer activity report
+        run: node src/cli.ts report --days "$DAYS" >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coderabbit-review-metrics
+          path: out/
+
+  security-findings:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - run: node src/cli.ts security --sarif --out out/coderabbit.sarif
+      - uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: out/coderabbit.sarif
+          category: coderabbit
